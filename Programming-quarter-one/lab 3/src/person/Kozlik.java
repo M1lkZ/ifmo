@@ -1,4 +1,4 @@
-package persons;
+package person;
 
 import java.util.Objects;
 
