@@ -6,8 +6,14 @@ import person.Person;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Park implements Place{
-    private Set<Person> vacationers = new HashSet<>();
+public class Park implements Service, Place {
+    protected Set<Person> walkers = new HashSet<>();
+    @Override
+    public void serve() {
+        for (Person person : walkers) {
+            person.setStressLevel(StressLevel.HAPPY);
+        }
+    }
     @Override
     public String toString() {
         return "Park";
@@ -15,14 +21,13 @@ public class Park implements Place{
 
     @Override
     public void acceptPerson(Person person) {
-        System.out.println(person.toString() + " entered the park.");
-        vacationers.add(person);
+        System.out.println(person.toString() + " entered the " + this.toString() + ".");
+        walkers.add(person);
     }
 
     @Override
-    public void serve() {
-        for (Person person : vacationers) {
-            person.setStressLevel(StressLevel.HAPPY);
-        }
+    public void removePerson(Person person) {
+        System.out.println(person.toString() + " left the " + this.toString() + ".");
+        walkers.remove(person);
     }
 }

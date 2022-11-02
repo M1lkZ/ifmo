@@ -2,7 +2,9 @@ package person;
 
 import item.Item;
 import other.BankAccountException;
+import other.NotEnteredException;
 import other.StressLevel;
+import place.Business;
 import place.Place;
 
 public abstract class Person {
@@ -11,8 +13,18 @@ public abstract class Person {
     protected int saturationLevel;
     public abstract void enter(Place place);
 
+    public Person(StressLevel stress, int saturation, int money) {
+        this.stressLevel = stress;
+        this.saturationLevel = saturation;
+        this.money = money;
+    }
+
+    public int getSaturationLevel() {
+        return this.saturationLevel;
+    }
+
     public void affectSaturation(int percentage){
-        this.saturationLevel += this.saturationLevel * (percentage/100);
+        this.saturationLevel += (this.saturationLevel * percentage/100);
     }
 
     public void setStressLevel(StressLevel stressLevel) {
@@ -27,7 +39,7 @@ public abstract class Person {
         return money;
     }
 
-    public void reduceMoney(int amount) {
+    public void reduceMoney(int amount) throws BankAccountException {
         if (this.money - amount < 0){
             throw new BankAccountException("Not enough money");
         }
@@ -36,5 +48,5 @@ public abstract class Person {
     public void increaseMoney(int amount){
         this.money += amount;
     }
-    public abstract void buy(Item ... item);
+    public abstract void buy(Business place,Item ... items) throws NotEnteredException, BankAccountException;
 }

@@ -1,6 +1,6 @@
 package other;
 
-public class BankAccountException extends RuntimeException{
+public class BankAccountException extends Exception{
     public BankAccountException() {
     }
 
