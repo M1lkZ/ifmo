@@ -8,9 +8,11 @@ import place.Business;
 import place.Place;
 
 public class Neznaika extends Person {
+//    protected int saturationLevel;
 
-    public Neznaika(StressLevel stress, int saturation, int money){
-        super(stress,saturation, money);
+
+    public Neznaika(StressLevel stress, int saturation, int money) {
+        super(stress, saturation, money);
     }
 
     @Override

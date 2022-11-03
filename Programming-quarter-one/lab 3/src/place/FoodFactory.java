@@ -1,5 +1,5 @@
 package place;
 
 public interface FoodFactory {
-    int makeFood();
+    int makeFood(int income);
 }

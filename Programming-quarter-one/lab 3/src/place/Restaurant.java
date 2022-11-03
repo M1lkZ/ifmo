@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Restaurant implements Business, Service, Place {
+
+    protected int money = 10000;
     protected Set<Person> visitors = new HashSet<>();
 
     @Override
@@ -22,19 +24,33 @@ public class Restaurant implements Business, Service, Place {
         System.out.println(person.toString() + " left the " + this.toString() + ".");
         visitors.remove(person);
     }
+
     FoodFactory factory = new FoodFactory() {
         @Override
-        public int makeFood() {
-            return (int)(Math.random()*100);
+        public int makeFood(int income) {
+            return ((int) (income / 10));
         }
     };
+
+    class FoodTradeHandler {
+        public FoodTradeHandler() {
+        }
+
+        public int handleTrade(FoodFactory factory, Restaurant restaurant){
+            int income = restaurant.getMoney();
+            return factory.makeFood(income);
+
+        };
+    }
     @Override
     public void serve() {
+        FoodTradeHandler handler = new FoodTradeHandler();
+        int allFoodAmount = handler.handleTrade(factory,this);
         for (Person person : visitors) {
             try {
-                person.reduceMoney(500);
-                person.affectSaturation(factory.makeFood());
-                System.out.printf("%s's saturation is %o \n",person.toString(),person.getSaturationLevel());
+                person.reduceMoney(allFoodAmount / (int)(Math.random()*100));
+                person.affectSaturation(allFoodAmount/(int)(Math.random()*100));
+                System.out.println(person.toString() + "'s saturation is " + person.getSaturationLevel());
             } catch (BankAccountException exc){
                 System.out.printf("%s doesn't have enough money to be served. \n", person.toString());
             }
@@ -52,7 +68,7 @@ public class Restaurant implements Business, Service, Place {
         @Override
         public void affect(Person person) {
             person.affectSaturation(30);
-            System.out.printf("%s's saturation is %o \n",person.toString(),person.getSaturationLevel());
+            System.out.println(person.toString() + "'s saturation is " + person.getSaturationLevel());
         }
 
         @Override
@@ -82,8 +98,9 @@ public class Restaurant implements Business, Service, Place {
             return "Icecream";
         }
     }
-    public Set<Person> getVisitors() {
-        return visitors;
+
+    public int getMoney() {
+        return money;
     }
 
     @Override

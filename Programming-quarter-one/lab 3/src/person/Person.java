@@ -20,11 +20,16 @@ public abstract class Person {
     }
 
     public int getSaturationLevel() {
-        return this.saturationLevel;
+        return saturationLevel;
     }
 
     public void affectSaturation(int percentage){
-        this.saturationLevel += (this.saturationLevel * percentage/100);
+        if ((int)(saturationLevel + saturationLevel * (float)percentage / 100) < 100){
+            saturationLevel = (int)(saturationLevel + saturationLevel * (float)percentage / 100);
+        } else {
+            saturationLevel = 100;
+        }
+
     }
 
     public void setStressLevel(StressLevel stressLevel) {

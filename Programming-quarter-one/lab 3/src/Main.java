@@ -4,20 +4,14 @@ import other.StressLevel;
 import person.Kozlik;
 import person.Neznaika;
 import person.Person;
-import place.Business;
-import place.Place;
-import place.Restaurant;
-import place.Service;
+import place.*;
 
 public class Main {
     public static void main(String[] args) throws NotEnteredException, BankAccountException {
         Restaurant restaurant = new Restaurant();
-        Neznaika zhizha = new Neznaika(StressLevel.DEPRESSED,15,1000);
-        Kozlik zhozha = new Kozlik(StressLevel.HAPPY,10,5000);
-        zhizha.enter(restaurant);
-        zhozha.enter(restaurant);
-        zhozha.buy(restaurant,new Restaurant.Bottle());
+        Park park = new Park();
+        Neznaika neznaika = new Neznaika(StressLevel.DEPRESSED,50,1000);
+        neznaika.enter(restaurant);
         restaurant.serve();
-        zhizha.read();
     }
 }
