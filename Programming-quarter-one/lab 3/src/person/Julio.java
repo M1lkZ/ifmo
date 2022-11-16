@@ -15,20 +15,20 @@ public class Julio extends Person{
 
     @Override
     public void enter(Place place) {
-        System.out.printf("Julio came to the %s . \n", place.toString());
+        System.out.printf("Julio came to the %s. \n", place.toString());
         place.acceptPerson(this);
     }
 
     @Override
     public void buy(Business place, Item... items) throws NotEnteredException, BankAccountException {
         for (Item item: items) {
-            place.sell(item,this);
-            System.out.printf("Julio bought the %s at the %s", item, place);
+            place.sell(item, this);
+            System.out.printf("Julio bought the %s at the %s \n", item, place);
         }
     }
 
     public void celebrate(){
-        System.out.println("Julio is celebrating his scam");
+        System.out.println(this.getStressLevel() + " and celebrating his scam in different city");
     }
 
     @Override

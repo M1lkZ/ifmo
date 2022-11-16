@@ -1,17 +1,19 @@
 package place;
 
+import item.Food;
 import item.Item;
 import other.BankAccountException;
 import other.NotEnteredException;
+import other.StressLevel;
 import person.Person;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Restaurant implements Business, Service, Place {
 
     protected int money = 10000;
     protected Set<Person> visitors = new HashSet<>();
+    protected List<Item> items = new ArrayList<>();
 
     @Override
     public void acceptPerson(Person person) {
@@ -36,21 +38,35 @@ public class Restaurant implements Business, Service, Place {
         public FoodTradeHandler() {
         }
 
-        public int handleTrade(FoodFactory factory, Restaurant restaurant){
+        public void handleTrade(FoodFactory factory, Restaurant restaurant){
             int income = restaurant.getMoney();
-            return factory.makeFood(income);
-
+            int totalBottles = (factory.makeFood(income) / 2) / (new Restaurant.Bottle()).getPrice();
+            int totalIcecream = (factory.makeFood(income) / 2) / (new Restaurant.Icecream()).getPrice();
+            for (int i = 0; i < totalBottles; i++){
+                items.add(new Restaurant.Bottle());
+            }
+            for (int i = 0; i < totalIcecream; i++){
+                restaurant.items.add(new Restaurant.Icecream());
+            }
+            int spent = factory.makeFood(income);
+            restaurant.reduceMoney(spent);
         };
     }
     @Override
     public void serve() {
         FoodTradeHandler handler = new FoodTradeHandler();
-        int allFoodAmount = handler.handleTrade(factory,this);
+        handler.handleTrade(factory, this);
+        int allFoodAmount = this.items.size();
+        System.out.println("Restaurant traded money for food with factory and served their customers.");
         for (Person person : visitors) {
             try {
-                person.reduceMoney(allFoodAmount / (int)(Math.random()*100));
-                person.affectSaturation(allFoodAmount/(int)(Math.random()*100));
+                int rand = (int)(Math.random()*10);
+                person.reduceMoney(allFoodAmount / rand);
+                this.addMoney(allFoodAmount / rand);
+                person.affectSaturation(allFoodAmount/ rand);
                 System.out.println(person.toString() + "'s saturation is " + person.getSaturationLevel());
+                person.setStressLevel(StressLevel.HAPPY);
+                System.out.println(person.getStressLevel());
             } catch (BankAccountException exc){
                 System.out.printf("%s doesn't have enough money to be served. \n", person.toString());
             }
@@ -60,14 +76,44 @@ public class Restaurant implements Business, Service, Place {
         if (!visitors.contains(customer)){
             throw new NotEnteredException("the customer is not in the restaurant");
         } else {
+            this.addMoney(item.getPrice());
             customer.reduceMoney(item.getPrice());
             item.affect(customer);
+            customer.addItem(item);
+            this.removeItem(item);
         }
     }
-    public static class Bottle implements Item{
+    public String getItems(){
+        return this.toString() + " has " + this.items.toString();
+    }
+
+    @Override
+    public void addMoney(int amount) {
+        this.money += amount;
+    }
+    @Override
+    public void reduceMoney(int amount) {
+        this.money -= amount;
+    }
+
+    @Override
+    public void addItem(Item item){
+        items.add(item);
+    }
+    @Override
+    public void removeItem(Item item) {
+        items.remove(item);
+    }
+
+    public static class Bottle implements Item, Food{
         @Override
         public void affect(Person person) {
+            System.out.printf("%s has bought %s \n",person.toString(), this.toString());
+        }
+
+        public void consume(Person person){
             person.affectSaturation(30);
+            System.out.println(person.toString() + " drinked from a bottle.");
             System.out.println(person.toString() + "'s saturation is " + person.getSaturationLevel());
         }
 
@@ -77,15 +123,27 @@ public class Restaurant implements Business, Service, Place {
         }
 
         @Override
+        public boolean equals(Object obj) {
+            if(this.toString() == obj.toString()){
+                return true;
+            }
+            return false;
+        }
+
+        @Override
         public String toString() {
             return "Bottle";
         }
     }
-    public static class Icecream implements Item {
+    public static class Icecream implements Item, Food {
         @Override
         public void affect(Person person) {
+            System.out.printf("%s has bought %s \n",person.toString(), this.toString());
+        }
+        public void consume(Person person){
             person.affectSaturation(-40);
-            System.out.printf("%s's saturation is %o \n",person.toString(),person.getSaturationLevel());
+            System.out.println(person.toString() + " ate an icecream.");
+            System.out.println(person.toString() + "'s saturation is " + person.getSaturationLevel());
         }
 
         @Override
@@ -93,6 +151,13 @@ public class Restaurant implements Business, Service, Place {
             return 60;
         }
 
+        @Override
+        public boolean equals(Object obj) {
+            if(this.toString() == obj.toString()){
+                return true;
+            }
+            return false;
+        }
         @Override
         public String toString() {
             return "Icecream";

@@ -7,10 +7,15 @@ import other.StressLevel;
 import place.Business;
 import place.Place;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Person {
     protected int money;
     protected StressLevel stressLevel;
     protected int saturationLevel;
+
+    protected List<Item> items = new ArrayList<>();
     public abstract void enter(Place place);
 
     public Person(StressLevel stress, int saturation, int money) {
@@ -18,7 +23,18 @@ public abstract class Person {
         this.saturationLevel = saturation;
         this.money = money;
     }
+    public void leave(Place place) {
+        place.removePerson(this);
+    }
 
+    public String getItems(){
+        return this.toString() + " has " + this.items.toString();
+    }
+
+
+    public void addItem(Item item){
+        this.items.add(item);
+    }
     public int getSaturationLevel() {
         return saturationLevel;
     }
@@ -36,8 +52,8 @@ public abstract class Person {
         this.stressLevel = stressLevel;
     }
 
-    public StressLevel getStressLevel() {
-        return stressLevel;
+    public String getStressLevel() {
+        return (this.toString() + " is " +  stressLevel);
     }
 
     public int getMoney() {
@@ -49,9 +65,6 @@ public abstract class Person {
             throw new BankAccountException("Not enough money");
         }
         this.money -= amount;
-    }
-    public void increaseMoney(int amount){
-        this.money += amount;
     }
     public abstract void buy(Business place,Item ... items) throws NotEnteredException, BankAccountException;
 }

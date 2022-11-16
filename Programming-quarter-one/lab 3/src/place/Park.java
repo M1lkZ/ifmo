@@ -11,7 +11,8 @@ public class Park implements Service, Place {
     @Override
     public void serve() {
         for (Person person : walkers) {
-            person.setStressLevel(StressLevel.HAPPY);
+            person.setStressLevel(StressLevel.CALM);
+            System.out.println(person.getStressLevel());
         }
     }
     @Override

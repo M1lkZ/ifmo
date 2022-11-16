@@ -2,14 +2,13 @@ package person;
 
 import item.Item;
 import other.BankAccountException;
+import other.NoItemException;
 import other.NotEnteredException;
 import other.StressLevel;
 import place.Business;
 import place.Place;
 
 public class Neznaika extends Person {
-//    protected int saturationLevel;
-
 
     public Neznaika(StressLevel stress, int saturation, int money) {
         super(stress, saturation, money);
