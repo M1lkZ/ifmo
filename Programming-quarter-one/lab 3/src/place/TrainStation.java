@@ -5,12 +5,9 @@ import other.BankAccountException;
 import person.Person;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class TrainStation implements Business, Place {
-    protected Set<Person> clients = new HashSet<>();
+public class TrainStation extends Place implements Business {
     protected List<Item> goods = new ArrayList<>();
 
     int money = 20000;
@@ -18,7 +15,7 @@ public class TrainStation implements Business, Place {
     public static class Ticket implements Item{
         @Override
         public void affect(Person person) {
-            System.out.printf("The ticket has no affect on %s \n",person.toString());
+            System.out.printf("The ticket has no affect on %s \n",person.getName());
         }
 
 
@@ -41,7 +38,12 @@ public class TrainStation implements Business, Place {
     }
     @Override
     public void sell(Item item, Person customer) throws BankAccountException {
-        customer.reduceMoney(item.getPrice());
+        try {
+            customer.reduceMoney(item.getPrice());
+        } catch (BankAccountException e) {
+            System.out.println(customer.getName() + " can't afford " + item.toString());
+            this.removePerson(customer);
+        }
         this.addMoney(item.getPrice());
         System.out.println("Transaction happened");
         customer.addItem(item);
@@ -70,16 +72,6 @@ public class TrainStation implements Business, Place {
         return this.toString() + " has " + this.goods.toString();
     }
 
-    @Override
-    public void acceptPerson(Person person) {
-        System.out.println(person.toString() + " entered the " + this.toString() + ".");
-        clients.add(person);
-    }
-    @Override
-    public void removePerson(Person person) {
-        System.out.println(person.toString() + " left the " + this.toString() + ".");
-        clients.remove(person);
-    }
     @Override
     public String toString() {
         return "Train Station";

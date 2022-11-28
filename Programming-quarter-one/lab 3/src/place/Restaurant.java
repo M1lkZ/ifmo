@@ -9,23 +9,10 @@ import person.Person;
 
 import java.util.*;
 
-public class Restaurant implements Business, Service, Place {
+public class Restaurant extends Place implements Business, Service {
 
-    protected int money = 10000;
-    protected Set<Person> visitors = new HashSet<>();
+    protected int money = 80000;
     protected List<Item> items = new ArrayList<>();
-
-    @Override
-    public void acceptPerson(Person person) {
-        System.out.println(person.toString() + " entered the " + this.toString() + ".");
-        visitors.add(person);
-    }
-
-    @Override
-    public void removePerson(Person person) {
-        System.out.println(person.toString() + " left the " + this.toString() + ".");
-        visitors.remove(person);
-    }
 
     FoodFactory factory = new FoodFactory() {
         @Override
@@ -54,21 +41,25 @@ public class Restaurant implements Business, Service, Place {
     }
     @Override
     public void serve() {
-        FoodTradeHandler handler = new FoodTradeHandler();
-        handler.handleTrade(factory, this);
+        if (this.items.size() == 0){
+            FoodTradeHandler handler = new FoodTradeHandler();
+            handler.handleTrade(factory, this);
+            System.out.println("Restaurant traded money for food with factory and served their customers.");
+        }
         int allFoodAmount = this.items.size();
-        System.out.println("Restaurant traded money for food with factory and served their customers.");
         for (Person person : visitors) {
             try {
                 int rand = (int)(Math.random()*10);
                 person.reduceMoney(allFoodAmount / rand);
                 this.addMoney(allFoodAmount / rand);
                 person.affectSaturation(allFoodAmount/ rand);
-                System.out.println(person.toString() + "'s saturation is " + person.getSaturationLevel());
+                System.out.println(person.getName() + "'s saturation is " + person.getSaturationLevel());
                 person.setStressLevel(StressLevel.HAPPY);
                 System.out.println(person.getStressLevel());
             } catch (BankAccountException exc){
-                System.out.printf("%s doesn't have enough money to be served. \n", person.toString());
+                System.out.printf("%s doesn't have enough money to be served. \n", person.getName());
+                this.removePerson(person);
+                throw new RuntimeException();
             }
         }
     }
@@ -76,11 +67,17 @@ public class Restaurant implements Business, Service, Place {
         if (!visitors.contains(customer)){
             throw new NotEnteredException("the customer is not in the restaurant");
         } else {
-            this.addMoney(item.getPrice());
-            customer.reduceMoney(item.getPrice());
-            item.affect(customer);
-            customer.addItem(item);
-            this.removeItem(item);
+            try {
+                this.addMoney(item.getPrice());
+                customer.reduceMoney(item.getPrice());
+                item.affect(customer);
+                customer.addItem(item);
+                this.removeItem(item);
+            } catch (BankAccountException exc){
+                System.out.printf("%s doesn't have enough money to be served. \n", customer.getName());
+                this.removePerson(customer);
+                throw new RuntimeException();
+            }
         }
     }
     public String getItems(){
@@ -108,13 +105,13 @@ public class Restaurant implements Business, Service, Place {
     public static class Bottle implements Item, Food{
         @Override
         public void affect(Person person) {
-            System.out.printf("%s has bought %s \n",person.toString(), this.toString());
+            System.out.printf("%s has bought %s \n",person.getName(), this.toString());
         }
 
         public void consume(Person person){
             person.affectSaturation(30);
-            System.out.println(person.toString() + " drinked from a bottle.");
-            System.out.println(person.toString() + "'s saturation is " + person.getSaturationLevel());
+            System.out.println(person.getName() + " drinked from a bottle.");
+            System.out.println(person.getName() + "'s saturation is " + person.getSaturationLevel());
         }
 
         @Override
@@ -138,12 +135,12 @@ public class Restaurant implements Business, Service, Place {
     public static class Icecream implements Item, Food {
         @Override
         public void affect(Person person) {
-            System.out.printf("%s has bought %s \n",person.toString(), this.toString());
+            System.out.printf("%s has bought %s \n",person.getName(), this.toString());
         }
         public void consume(Person person){
             person.affectSaturation(-40);
-            System.out.println(person.toString() + " ate an icecream.");
-            System.out.println(person.toString() + "'s saturation is " + person.getSaturationLevel());
+            System.out.println(person.getName() + " ate an icecream.");
+            System.out.println(person.getName() + "'s saturation is " + person.getSaturationLevel());
         }
 
         @Override

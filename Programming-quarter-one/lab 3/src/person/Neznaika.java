@@ -1,38 +1,14 @@
 package person;
 
-import item.Item;
-import other.BankAccountException;
-import other.NoItemException;
-import other.NotEnteredException;
 import other.StressLevel;
-import place.Business;
-import place.Place;
 
 public class Neznaika extends Person {
 
-    public Neznaika(StressLevel stress, int saturation, int money) {
-        super(stress, saturation, money);
+    public Neznaika(String name, StressLevel stress, int saturation, int moneyMultiplier) {
+        super(name, stress, saturation, moneyMultiplier);
     }
 
-    @Override
-    public void enter(Place place) {
-        System.out.printf("Neznaika came near %s. \n", place.toString());
-        place.acceptPerson(this);
-    }
-
-    @Override
-    public void buy(Business place, Item ... items) throws NotEnteredException, BankAccountException {
-        for (Item item : items) {
-            place.sell(item, this);
-        }
-    }
-
-    public void read(){
-        System.out.println("Neznaika took out the letter and read it.");
-    }
-
-    @Override
-    public String toString() {
-        return "Neznaika";
+    public void read_letter(){
+        System.out.println("Neznaika took the letter out and read it");
     }
 }
