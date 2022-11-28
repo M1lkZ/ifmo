@@ -1,4 +1,3 @@
-import other.BankAccountException;
 import other.NotEnteredException;
 import other.StressLevel;
 import person.Neznaika;
@@ -11,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Main {
-    public static void main(String[] args) throws NotEnteredException, BankAccountException {
+    public static void main(String[] args) throws NotEnteredException{
         Set<Person> persons = new HashSet<>();
         persons.add(new Person("Julio", StressLevel.HAPPY, 80,500));
         persons.add(new Person("Kozlik", StressLevel.DEPRESSED, 40,20));
