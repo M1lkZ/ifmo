@@ -1,3 +1,4 @@
+import other.Handler;
 import other.NotEnteredException;
 import other.StressLevel;
 import person.Neznaika;
@@ -18,8 +19,6 @@ public class Main {
         TrainStation trainStation = new TrainStation();
         Restaurant restaurant = new Restaurant();
         Park park = new Park();
-        for (Person person : persons) {
-            person.act(trainStation,restaurant,park);
-        }
+        Handler.handle(persons,trainStation,restaurant,park);
     }
 }

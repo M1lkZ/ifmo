@@ -53,6 +53,7 @@ public class Restaurant extends Place implements Business, Service {
                 person.reduceMoney(allFoodAmount / rand);
                 this.addMoney(allFoodAmount / rand);
                 person.affectSaturation(allFoodAmount/ rand);
+                System.out.println(person.getName() + " is served.");
                 System.out.println(person.getName() + "'s saturation is " + person.getSaturationLevel());
                 person.setStressLevel(StressLevel.HAPPY);
                 System.out.println(person.getStressLevel());
@@ -63,6 +64,29 @@ public class Restaurant extends Place implements Business, Service {
             }
         }
     }
+
+    @Override
+    public void handle(Set<Person> persons) {
+        for (Person person:persons) {
+            person.move(this);
+        }
+        for (Person person:persons) {
+            try {
+                this.serve();
+                System.out.println(this.getItems());
+                for (int i = 0; i < ((int)(Math.random()*10));i++){
+                    person.buy(this, new Restaurant.Icecream(), new Restaurant.Bottle());
+                }
+                person.leave(this);
+                System.out.println(this.getItems());
+                System.out.println(person.getItems());
+            } catch (RuntimeException | BankAccountException e) {
+                System.out.println(person.getName() + " can't be served.");
+                person.leave(this);
+            }
+        }
+    }
+
     public void sell(Item item, Person customer) throws NotEnteredException, BankAccountException {
         if (!visitors.contains(customer)){
             throw new NotEnteredException("the customer is not in the restaurant");

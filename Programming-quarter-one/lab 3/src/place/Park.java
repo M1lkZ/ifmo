@@ -14,6 +14,16 @@ public class Park extends Place implements Service {
             System.out.println(person.getStressLevel());
         }
     }
+
+    @Override
+    public void handle(Set<Person> persons) {
+        for (Person person: persons) {
+            person.move(this);
+            this.serve();
+            person.leave(this);
+        }
+    }
+
     @Override
     public String toString() {
         return "Park";

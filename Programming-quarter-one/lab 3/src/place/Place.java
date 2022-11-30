@@ -1,5 +1,6 @@
 package place;
 
+import other.BankAccountException;
 import person.Person;
 
 import java.util.HashSet;

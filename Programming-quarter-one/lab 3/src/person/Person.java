@@ -23,45 +23,10 @@ public class Person {
         this.money = genMoney(moneyMultiplier);
     }
 
-    public void act(TrainStation ts, Restaurant restaurant, Park park) {
-        System.out.println(this.getName() + " has " + this.getMoney() + "$.");
-        if (this.getName() == "Julio"){
-            this.move();
-            this.enter(ts);
-            try {
-                this.buy(ts,new TrainStation.Ticket());
-                this.leave(ts);
-                System.out.println("Julio is out of town with money");
-            } catch (BankAccountException e) {
-                System.out.println("Julio gets arrested for trying to sneak on the Train.");
-            }
-        } else {
-            this.move();
-            this.enter(restaurant);
-            try {
-                restaurant.serve();
-                System.out.println(this.getName() + " is served.");
-                System.out.println(restaurant.getItems());
-                for (int i = 0; i < ((int)(Math.random()*10));i++){
-                    this.buy(restaurant, new Restaurant.Icecream(), new Restaurant.Bottle());
-                }
-                this.leave(restaurant);
-                System.out.println(restaurant.getItems());
-                System.out.println(this.getItems());
-            } catch (RuntimeException | BankAccountException e) {
-                System.out.println(this.getName() + " can't be served.");
-            }
-            this.move();
-            this.enter(park);
-            park.serve();
-            this.leave(park);
-        }
-    }
-
-
-    public void move(){
+    public void move(Place place){
         this.affectSaturation(-5);
         System.out.println(this.getName() + "'s saturation is " + this.getSaturationLevel());
+        this.enter(place);
     }
     public void enter(Place place) {
         place.acceptPerson(this);
